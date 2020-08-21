@@ -107,7 +107,7 @@ function getTriangleCost(bought) {
 
 function getShardCost() {
 	let cost = new Decimal(2);
-	if (typeof(game.upgrades[0]) != 'undefined' && game.upgrades[0][6])
+	if (typeof(game.upgrades[0]) != 'undefined' && game.upgrades[0][5])
 			cost = cost.sub(0.1);
 	if (cost.lt(0)) 
 		cost = new Decimal(0);
