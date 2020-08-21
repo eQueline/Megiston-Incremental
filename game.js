@@ -123,6 +123,7 @@ function update() {
 			if (typeof(game.shards)== 'undefined') {
 				$('#flipUpgRow2').show();
 				$('#shardsContainer').show();
+				$('#squareExplain').show();
 				notify('Oops! You can not get squares just yet. Try getting some shards first, they are powerful enough on their own, I promise!', 30000);
 				$('#ach3ph').hide();
 				$('#ach3a').show();
