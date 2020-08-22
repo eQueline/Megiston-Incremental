@@ -3,19 +3,45 @@ $(function () {
   $('[data-toggle="dropdown"]').dropdown();
 });
 
-function notify(text, timer=4900) {
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+function pushLog(text) {
+	game.log.push(text);
+	if (game.log.length>10)
+		game.log.shift();
+	printLog();
+}
+
+function printLog() {
+	$('#Logs').html('');
+	for (let i=game.log.length-1; i>=0; i--) {
+		$('#Logs').append('<span>'+game.log[i]+'</span><br>');
+	}
+}
+
+var notifycounter = 0;
+function notify(text, timer=4900, log=true) {
 	let span = document.createElement('span');
 	if (timer > 5000)
 		span.setAttribute('class', 'input-group-text input-group-digits');
 	else
 		span.setAttribute('class', 'input-group-text input-group-digits notify-anim');
-	span.innerText = text;
+	span.setAttribute('id', 'notif' + notifycounter);
+	span.setAttribute('onclick', 'closeNotification("notif'+notifycounter+'"); return false;');
+	span.innerHTML = text;
+	if (log)
+		pushLog(text);
 	$('#notify').append(span);
-	setTimeout(closeNotification, timer, span);
+	setTimeout(closeNotification, timer, 'notif'+notifycounter);
+	notifycounter++;
 }
 
-function closeNotification(element) {
-	element.outerHTML = '';
+function closeNotification(elementId) {
+	var element = document.getElementById(elementId);
+	if (element != null)
+		element.parentNode.removeChild(element);
 }
 
 function format() {
@@ -35,7 +61,7 @@ function formatValue(value, prec=0) {
 		var value = new Decimal(value);
 	}
 	if (prec==0) value = value.round();
-	if (value.lt(1000)) {
+	if (value.lt(10000)) {
 		if (Number.isInteger(value.mag))
 			return (value).toFixed(0);
 		else 
@@ -86,96 +112,186 @@ function square(a, i = new Decimal(1)) {
 		return square(triangle(a, a), i.sub(1));
 }
 
+function getMaxTriangleCost() {
+	let totalCost = new Decimal(0);
+	let resource = game.resource;
+	let amount = new Decimal(0);
+	let cost = new Decimal(0);
+	do {
+		cost = getTriangleCost(game.triangles.bought.add(amount.add(1)));
+		if (resource.gte(cost)) {
+			resource = resource.sub(cost);
+			totalCost = totalCost.add(cost);
+			amount = amount.add(1);
+		}
+	} while (resource.gte(cost));
+	return [amount, resource];
+}
+
 function getTriangleCost(bought) {
 	let effectiveBought = bought;
 	let cost = new Decimal(0);
-	if (game.achievements[2]) {
+	if (typeof(game.flip) != 'undefined' && game.flip.flipped.gt(0) && game.achievements[2]) {
 		effectiveBought = effectiveBought.sub(Decimal.log10(game.flip.flipped).floor());
 	}
-	if (effectiveBought<28) 
-		cost = Decimal.pow(1.27, effectiveBought).add(effectiveBought.mul(2.72)).add(6).ceil();
-	else if (effectiveBought<40) 
-		cost = effectiveBought.sub(27).pow(2.5).mul(1000).ceil();
-	else if (effectiveBought<50)
-		cost = Decimal.pow(4, effectiveBought.sub(40)).mul(1e6);
-	else
-		cost = effectiveBought.pow(effectiveBought.sub(41)).pow(2);
+	if (effectiveBought<50)
+		cost = Decimal.pow(10, effectiveBought.pow(3).mul(0.00028).add(effectiveBought.pow(2).mul(-0.01)).add(effectiveBought.mul(0.16))).add(effectiveBought.mul(3)).ceil();
+	else {
+		cost = Decimal.pow(10, effectiveBought.sub(41).pow(1.8).sub(34).ceil());
+		if (typeof(game.shards) != 'undefined') {
+			cost = cost.add(Decimal.pow(1e5, game.shards.bought));
+		}
+	}
+	
 	if (cost.lt(0)) 
 		cost = new Decimal(0);
 	return cost;
 }
 
-function getShardCost() {
-	let cost = new Decimal(2);
-	if (typeof(game.upgrades[0]) != 'undefined' && game.upgrades[0][5])
-			cost = cost.sub(0.1);
+function getTriangleBuyAmount() {
+	let buyAmount = new Decimal(0.1);
+	if (checkFlipUpgrade(1))
+		buyAmount = buyAmount.add(0.05);
+	if (typeof(game.shards) != 'undefined') {
+		/*if (checkFlipUpgrade(5))
+			buyAmount = buyAmount.sub(game.shards.bought.mul(0.04));
+		else*/
+			buyAmount = buyAmount.sub(game.shards.bought.mul(4).floor().div(100));
+	}
+	buyAmount = Decimal.max(0.01, buyAmount);
+	if (game.achievements[4])
+		buyAmount = buyAmount.add(0.01);
+	
+	return buyAmount;
+}
+
+function getShardCost(bought) {
+	let cost = new Decimal(shardCosts[bought-1]);
 	if (cost.lt(0)) 
 		cost = new Decimal(0);
+	if (checkFlipUpgrade(4))
+		cost = cost.sub(0.2);
 	return cost;
+}
+
+function getTotalShardCost() {
+	let cost = new Decimal(0);
+	for (let i=0; i<game.shards.bought; i++) {
+		cost = cost.add(getShardCost(new Decimal(i+1)));
+	}
+	return cost;
+}
+
+function revealShards() {
+	$('#flipUpgRow2').show();
+	$('#shardsContainer').show();
+	$('#squareExplain').show();
+	$('#ach3ph').hide();
+	$('#ach3a').show();
+}
+
+function checkFlipUpgrade(a) {
+	if (typeof(game.flip) == 'undefined') return false;
+	return game.flip.upgrades[a]==true;
 }
 
 function update() {
 	// shard
-	let trianglesSpent = new Decimal(0);
+	//let trianglesSpent = new Decimal(0);
+	let trianglesValue = new Decimal(1);
 	let shardsValue = new Decimal(0);
-	if (typeof(game.upgrades[0]) != 'undefined')  {
-		if (game.upgrades[0][4]) {
-			if (typeof(game.shards)== 'undefined') {
-				$('#flipUpgRow2').show();
-				$('#shardsContainer').show();
-				$('#squareExplain').show();
-				notify('Oops! You can not get squares just yet. Try getting some shards first, they are powerful enough on their own, I promise!', 30000);
-				$('#ach3ph').hide();
-				$('#ach3a').show();
-				game.shards = {};
-				game.shards.bought = new Decimal(0);
-				game.shards.cost = getShardCost();
-			}
-			let shards = game.shards.bought;
-			trianglesSpent = getShardCost().mul(shards);
-			let shardsBuyAmount = new Decimal(0.1);
-			shardsValue = shards.mul(shardsBuyAmount);
-			game.shards.value = shardsValue;
-			
-			$('#shards').val(formatValue(game.shards.value, 2));
-			$('#shardsCost').text(format('Cost: {0} △', formatValue(getShardCost(), 2)));
-		}
-	}
 	
+	if (checkFlipUpgrade(3))  {
+		if (typeof(game.shards)== 'undefined') {
+			revealShards();
+			notify('Oops! You can not get squares just yet. Try getting some shards first, they are powerful enough on their own, I promise!', 30000);
+			game.shards = {};
+			game.shards.bought = new Decimal(0);
+			$('#shardsButton').show();
+		}
+		let shards = game.shards.bought;
+		//trianglesSpent = getTotalShardCost();
+		let shardsBuyAmount = new Decimal(0.1);
+		
+		shardsValue = shards.mul(shardsBuyAmount);
+		if (checkFlipUpgrade(7))
+			shardsValue = shardsValue.add(0.05);
+		
+		if (checkFlipUpgrade(6))
+			trianglesValue = trianglesValue.add(shards.mul(0.4));
+		game.shards.value = shardsValue;
+		
+		$('#shards').val(formatValue(game.shards.value, 2));
+		$('#shardsBuyAmount').text(format('+{0}', formatValue(shardsBuyAmount, 2)));
+		$('#shardsCost').text(format('Cost: {0} △', formatValue(getShardCost(shards.add(1)), 2)));
+		//$('#shardsButton').text(format('get 0.1 shard for {0} △', flippedAmount));
+	}
+
 	// flip
 	let flippedAmount = getFlippedAmount();
-	$('#flipButton').text(format('Flip to get {0} ▽', flippedAmount));
+	$('#flipButton').text(format('Flip △ to get {0} ▽', formatValue(flippedAmount,2)));
 	$('#flipButton').attr('disabled', flippedAmount.eq(0));
 	
-	let buyAmount = new Decimal(0.1);
-	let value = new Decimal(1);
+	let buyAmount = getTriangleBuyAmount();
 	if (typeof(game.flip) == 'undefined') {
-		if (game.resource.gte(5e3))
+		if (game.resource.gte(1e3)) {
+			game.flip = {};
+			game.flip.flipped = new Decimal(0);
+			game.flip.triangles = new Decimal(0);
+			game.flip.upgrades = [];
+			game.flip.flipMulti = new Decimal(0);
 			$('#flipButton').show();
-	} else {
-		$('#flippedTriangles').text(format('You have {0} ▽', formatValue(game.flip.triangles)));
-		$('#flipped').text(format('Times flipped: {0}', formatValue(game.flip.flipped)));
-		if (typeof(game.upgrades[0]) != 'undefined')  {
-			if (game.upgrades[0][1])
-				buyAmount = buyAmount.add(0.05);
-			if (game.upgrades[0][3])
-				value = value.add(1);
-			$('#trianglesBuyAmount').text(format('+{0}', formatValue(buyAmount, 2)));
+			$('#flipMult').show();
+			notify('Flipping resets all resource and △. Upgrades and achievements will not reset', 30000);
+			notify('Get 1e4 resource to flip', 30000);
 		}
+	} else {
+		$('#flippedTriangles').text(format('▽: {0}', formatValue(game.flip.triangles, 2)));
+		$('#flipped').text(format('Times flipped: {0}', formatValue(game.flip.flipped)));
+		var flipMultCost = Decimal.pow(50, game.flip.flipMulti).mul(10);
+		$('#flippedUpg2Text').html(format('Double ▽ gain<br>Cost: {0} ▽', formatValue(flipMultCost,2)));
+		$('#flipMult').text(format('▽ gain Mult: {0}', formatValue(getFlipMult(),2)));
+		if (checkFlipUpgrade(2))
+			trianglesValue = trianglesValue.add(1);
+		$('#trianglesBuyAmount').text(format('+{0}', formatValue(buyAmount, 2)));
 	}
 	
-	game.triangles.value = value.add(game.triangles.bought.mul(buyAmount)).sub(trianglesSpent);
-	game.triangles.income = triangle(game.triangles.value, shardsValue.add(1));
+	game.triangles.value = trianglesValue.add(game.triangles.bought.mul(buyAmount));
 	$('#triangles').val(formatValue(game.triangles.value, 2));
-	$('#trianglesCost').text('Cost: ' + formatValue(getTriangleCost(game.triangles.bought.add(1)), 2));
-	$('#trianglesIncome').text(formatValue(game.triangles.income, 2));
-	$('#resource').text('Resource: ' + formatValue(game.resource, 2));
+	
+	let triangleIndex = shardsValue.add(1);
+	let income = triangle(game.triangles.value, triangleIndex);
+	if (income.gte(1.78e308)) {
+		income = new Decimal(1.78e308);
+		$('#trianglesIncome').text('Infinity per tick');
+	} else
+		$('#trianglesIncome').text(format('{0} per tick', formatValue(income, 2)));
+	game.triangles.income = income;
+	
+	let resource = game.resource;
+	if (resource.gte(1.78e308)) {
+		resource = new Decimal(1.78e308);
+		$('#resource').text('Resource: Infinity');
+	} else
+		$('#resource').text('Resource: ' + formatValue(game.resource, 2));
+	game.resource = resource;
+	
+	if (triangleIndex.neq(1)) {
+		$('#trianglesLabel').html(format('△<sub>{0}</sub>', formatValue(triangleIndex, 2)));
+		//$('#shardsEffect').text('Increases △ index, but reduces amount per purchase');
+	}
+	let cost = getTriangleCost(game.triangles.bought.add(1));
+	if (cost.gte(1.78e308)) {
+		cost = new Decimal(1.78e308);
+		$('#trianglesCost').text('Cost: Infinity');
+	} else
+		$('#trianglesCost').text(format('Cost: {0}', formatValue(cost, 2)));
 	
 	// achievements
-	if (!game.achievements[0] && typeof(game.flip) != 'undefined') {
+	if (!game.achievements[0] && typeof(game.flip) != 'undefined' && game.flip.flipped.gt(0)) {
 		getAchievement(0);
 	}
-	if (!game.achievements[1] && game.triangles.value.gte(4.1)) {
+	if (!game.achievements[1] && game.triangles.value.gte(4.3)) {
 		getAchievement(1);
 	}
 	if (!game.achievements[2] && game.resource.gte(1e10)) {
@@ -187,63 +303,137 @@ function update() {
 	if (!game.achievements[4] && typeof(game.flip) != 'undefined' && game.flip.flipped.gte(111)) {
 		getAchievement(4);
 	}
+	if (resource.eq(1.78e308)) {
+		if (shardsValue.lt(0.5)) {
+			if (typeof(game.infinitied) == 'undefined') {
+				game.infinitied = false;
+				notify('Gratz with your first Infinity, if a bit early... Now try purchasing all those shards you\'ve been ignoring lately ;)' , 20000);
+			}
+		} else {
+			if (typeof(game.infinitied) == 'undefined') {
+				game.infinitied = true;
+				notify('Only half of a square and Infinity already? Told you they\'re powerful!', 20000);
+				sleep(2000).then(()=>{
+					notify('Let\'s try something else...', 20000);
+					setTimeout(talkInfinity, 3000);
+				});
+			} else if (!game.infinitied) {
+				game.infinitied = true;
+				notify('Half a square, and it broke again?', 30000);
+				sleep(2000).then(()=>{
+					notify('Let\'s try something else...', 30000);
+					setTimeout(talkInfinity, 3000);
+				});
+			}
+		}
+	}
+	if (!game.achievements[5] && typeof(game.infinitied) != 'undefined' && game.infinitied) {
+		getAchievement(5);
+	}
+	
+	// auto
+	if (game.triangles.auto) {
+		buyMax('triangles');
+	}
+}
+
+function talkInfinity() {
+	notify('TO BE DONE', 30000);
+	revealInfinity();
+}
+
+function revealInfinity() {
+	$('#ach5ph').hide();
+	$('#ach5a').show();
 }
 
 function getFlippedAmount(a) {
 	let resource = a?a:game.resource;
 	if (resource.lte(0)) return new Decimal(0);
 	let amount = Decimal.max(resource.log10().sub(3).floor(), 0);
-	if (typeof(game.upgrades[0]) != 'undefined')  {
-		if (game.upgrades[0][2])
-			amount = amount.mul(2);
-	}
 	if (amount.gt(0) && game.achievements[1]) 
 		amount = amount.add(1);
+	amount = amount.mul(getFlipMult());
 	return amount;
+}
+
+function getFlipMult() {
+	if (typeof(game.flip) != 'undefined' && game.flip.flipMulti > 0) {
+		return Decimal.pow(2, game.flip.flipMulti);
+	}
+	return new Decimal(1);
 }
 
 function flip() {
 	let flippedAmount = getFlippedAmount();
 	if (flippedAmount.lte(0)) return;
 	$('#FlipTab').show();
-	if (typeof(game.flip) == 'undefined') {
-		game.flip = {};
-		game.flip.flipped = new Decimal(0);
-		game.flip.triangles = new Decimal(0);
-	}
-	game.flip.flipped = game.flip.flipped.add(1);
+	$('#flippedTriangles').show();
+	let flipped = new Decimal(1);
+	if (checkFlipUpgrade(5))
+		flipped = flipped.mul(10);
+	game.flip.flipped = game.flip.flipped.add(flipped);
 	game.flip.triangles = game.flip.triangles.add(flippedAmount);
 	update();
 	
 	game.resource = new Decimal(0);
-	game.triangles.value = new Decimal(1);
 	game.triangles.bought = new Decimal(0);
-	game.triangles.income = new Decimal(1);
 	if (game.achievements[0]) {
 		game.triangles.bought = new Decimal(10);
-	}
-	if (typeof(game.shards) != 'undefined') {
-		game.shards.bought = new Decimal(0);
 	}
 	update();
 }
 
 function getUpgCost(a,b) {
-	return game.costs[a-1][b-1];
+	return costs[a][b];
 }
 
 function flippedBuy(a) {
-	if (typeof(game.upgrades[0]) == 'undefined')
-		game.upgrades[0] = [];
-	if (game.upgrades[0][a-1]) return;
-	let button = $('#flippedUpg'+a);
-	let cost = getUpgCost(1,a);
+	if (typeof(game.flip.upgrades) == 'undefined') {
+		game.flip.upgrades = [];
+	}
+	if (game.flip.upgrades[a]) return;
+	var button = $('#flippedUpg'+a);
+	var cost = getUpgCost(0,a);
 	if (game.flip.triangles.gte(cost)) {
 		button.attr('class', 'btn btn-outline-success');
 		button.attr('disabled', true);
 		game.flip.triangles = game.flip.triangles.sub(cost);
-		game.upgrades[0][a-1] = true;
+		game.flip.upgrades[a] = true;
 		update();
+	}
+}
+
+function buyFlipMulti() {
+	if (typeof(game.flip.flipMulti) == 'undefined')
+		game.flip.flipMulti = new Decimal(0);
+	var cost = Decimal.pow(50, game.flip.flipMulti).mul(10);
+	if (game.flip.triangles.gte(cost)) {
+		game.flip.flipMulti = game.flip.flipMulti.add(1);
+		game.flip.triangles = game.flip.triangles.sub(cost);
+		update();
+	}
+}
+
+function buyAuto(type) {
+	switch (type) {
+		case 'triangles':
+			if (game.flip.triangles.gte(500)) {
+				game.flip.triangles = game.flip.triangles.sub(500);
+				game.triangles.auto = false;
+				$('#trianglesAutoUpg').attr('class', 'btn btn-outline-success');
+				$('#trianglesAutoUpg').attr('disabled', true);
+				$('#trianglesAutobuyContainer').show();
+				update();
+			}
+			break;
+	}
+}
+
+function switchAutobuy(type) {
+	switch (type) {
+		case 'triangles':
+			game.triangles.auto = $('#trianglesAutobuy').prop('checked');
 	}
 }
 
@@ -254,21 +444,40 @@ function buy(type) {
 			if (game.resource.gte(cost)) {
 				game.resource = game.resource.sub(cost);
 				game.triangles.bought = game.triangles.bought.add(1);
+				update();
 			}
 			break;
 		case 'shards':
 			var amount = game.shards.bought.add(1);
-			var cost = getShardCost();
-			if (game.triangles.value.gt(cost)) {
-				if (triangle(game.triangles.value, game.shards.value.add(1)).gt(triangle(game.triangles.value.sub(cost), amount.mul(0.1).add(1)))) {
+			var cost = getShardCost(amount);
+			if (game.triangles.value.gte(cost)) {
+				/*if (triangle(game.triangles.value, game.shards.value.add(1)).gt(triangle(game.triangles.value.sub(cost), amount.mul(0.1).add(1)))) {
 					notify('That transaction will severely reduce your current income. Get some more △', 15000);
 					return;
-				}
+				}*/
 				game.shards.bought = amount;
+				game.resource = new Decimal(0);
+				game.triangles.bought = new Decimal(0);
+				if (game.achievements[0]) {
+					game.triangles.bought = new Decimal(10);
+				}
+				update();
 			}
 			break;
 	}
-	update();
+}
+
+function buyMax(type) {
+	switch (type) {
+		case 'triangles':
+			var tryBuyMax = getMaxTriangleCost();
+			if (tryBuyMax[0].gt(0)) {
+				game.resource = tryBuyMax[1];
+				game.triangles.bought = game.triangles.bought.add(tryBuyMax[0]);
+				update();
+			}
+			break;
+	}
 }
 
 function getAchievement(id){
@@ -278,28 +487,92 @@ function getAchievement(id){
 }
 
 function tick() {
+	//console.log('tick');
 	game.resource = game.resource.add(game.triangles.income);
 	update();
 	let tickspeed = 675;
-	if (typeof(game.upgrades[0]) != 'undefined' && game.upgrades[0])
+	if (checkFlipUpgrade(0))
 		tickspeed /= 1.5;
 	if (game.achievements[3])
 		tickspeed /= 1.25;
+	if (fast) tickspeed /= 3;
 	setTimeout(tick, tickspeed);
 }
 
-var game = {};
-game.resource = new Decimal(0);
-game.triangles = {};
-game.triangles.value = new Decimal(0);
-game.triangles.bought = new Decimal(0);
-game.triangles.income = new Decimal(1);
+function saveGame(log = true) {
+	window.localStorage['MegistonSave'] = JSON.stringify(game);
+	if (log) notify('Game saved', 4900, false);
+	setTimeout(saveGame, 60000);
+}
 
-game.squares = {};
-game.squares.value = new Decimal(0);
-game.squares.cost = new Decimal(1e40);
-game.squares.process = square;
-game.upgrades = [];
-game.costs = [[1,3,10,25,100,500]];
-game.achievements = [];
-setTimeout(tick, 600);
+function hardReset() {
+	delete window.localStorage['MegistonSave'];
+}
+
+function loadGame(log = true) {
+	let save = window.localStorage['MegistonSave'];
+	if (typeof(save) == 'undefined') {
+		game = {};
+		game.resource = new Decimal(0);
+		game.triangles = {};
+		game.triangles.value = new Decimal(0);
+		game.triangles.bought = new Decimal(0);
+		game.triangles.income = new Decimal(1);
+		game.achievements = [];
+		game.log = [];
+		
+		game.version = 2;
+		saveGame(true);
+		tick();
+		//loadGame(false);
+	} else {
+		game = JSON.parse(save);
+		game.resource = Decimal.fromString(game.resource);
+		//triangles
+		game.triangles.value = Decimal.fromString(game.triangles.value);
+		game.triangles.bought = Decimal.fromString(game.triangles.bought);
+		game.triangles.income = Decimal.fromString(game.triangles.income);
+		if (typeof(game.triangles.auto) != 'undefined') {
+			$('#trianglesAutobuyContainer').show();
+			$('#trianglesAutoUpg').attr('class', 'btn btn-outline-success');
+			$('#trianglesAutoUpg').attr('disabled', true);
+			game.triangles.auto = false;
+		}
+		//flip
+		if (typeof(game.flip) != 'undefined') {
+			$('#flipButton').show();
+			$('#FlipTab').show();
+			$('#flippedTriangles').show();
+			game.flip.flipped = Decimal.fromString(game.flip.flipped);
+			game.flip.triangles = Decimal.fromString(game.flip.triangles);
+			game.flip.flipMulti = Decimal.fromString(game.flip.flipMulti);
+			game.flip.upgrades.forEach((a,i)=>{
+				$('#flippedUpg'+i).attr('class', a?'btn btn-outline-success':'btn btn-outline-primary');
+				$('#flippedUpg'+i).attr('disabled', a);
+			});
+		}
+		//shards
+		if (checkFlipUpgrade(3)) {
+			revealShards();
+			if (typeof(game.shards) != 'undefined') {
+				game.shards.value = Decimal.fromString(game.shards.value);
+				game.shards.bought = Decimal.fromString(game.shards.bought);
+			} else {
+				game.shards = {};
+				game.shards.value = new Decimal(0);
+				game.shards.bought = new Decimal(0);
+			}
+		}
+		//achs
+		game.achievements.forEach((a,i)=>$('#ach'+i).attr('class', a?'btn btn-outline-success':'btn btn-outline-primary'));
+		printLog();
+		if (log) notify('Game loaded', 4900, false);
+		saveGame(false);
+		tick();
+	}
+}
+
+var costs = [[1,5,25,100,150,2500,3000,4000]];
+var shardCosts = [8.55, 7.95, 6.80, 4.95, 4.90, 7, 7, 7, 7];
+var game = {};
+var fast = false;

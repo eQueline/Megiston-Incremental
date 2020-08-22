@@ -1,7 +1,7 @@
 body {
 	padding: 70px 0;
 	overflow-y: scroll;
-	background-color: whitesmoke;
+	background-color: #f0f0f0;
 }
 
 ol > li {
@@ -17,6 +17,10 @@ ol > li {
 	margin: 5px;
 	z-index: 1000;
 	width: auto;
+}
+
+.tablinks {
+	border-radius: 0;
 }
 
 /* Style the tab */
@@ -60,7 +64,7 @@ ol > li {
 
 
 .mb-3 {
-	max-width: 700px;
+	max-width: 900px;
 }
 
 .form-input {
@@ -75,14 +79,17 @@ ol > li {
 }
 
 .btn-inline {
-	width: 70px;
+	width: 90px;
 	border-radius: 0;
 	border-right: 0;
-	border-left: 0;
+}
+
+.form-input {
+	border-right: 0px;
 }
 
 .input-group-append {
-	margin-left: 0px;
+	margin-left: 0px
 }
 
 .input-group-digits {
