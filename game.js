@@ -594,7 +594,7 @@ function tick() {
 function saveGame(log = true) {
 	window.localStorage['MegistonSave'] = JSON.stringify(game);
 	if (log) notify('Game saved', 4900, false);
-	//setTimeout(saveGame, 60000);
+	setTimeout(saveGame, 60000);
 }
 
 function hardReset() {
