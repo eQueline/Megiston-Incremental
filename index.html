@@ -11,8 +11,10 @@
 	<script src="lib/break_eternity.js"></script>
 	<script src="game.js"></script>
 </head>
-<body onload="loadGame()">
-	<div class="container">
+<body onload="initPops(); loadGame();">
+	<div class="d-flex justify-content-center"><div id="plus">+</div></div>
+	<div class="wipe-transition"></div>
+	<div id="root" class="container">
 		<div class="d-flex justify-content-between">
 			<h2 id="resource" class="page-header">Resource: 0</h2>
 			<h2 id="flippedTriangles" class="page-header" style="display: none">▽: 0</h2>
@@ -42,7 +44,7 @@
 					<div class="input-group-prepend">
 						<span id="trianglesLabel" class="input-group-text input-group-digits" style="font-size:16px">△</span>
 					</div>
-					<input id="triangles" type="text" class="form-control form-input" style="text-align: center;" disabled="true" value="1">
+					<input id="triangles" type="text" class="form-control form-input" style="text-align: center;" disabled="true">
 					<div class="input-group-append">
 						<span class="input-group-btn">
 							<button id="trianglesBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('triangles');">+0.1</button>
@@ -62,10 +64,10 @@
 			<form id="shardsContainer" style="display:none" class="form-inline">
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<span id="shardsLabel" class="input-group-text input-group-digits" style="font-size:16px" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-content="Increases △ index and cost, reduces amount per purchase by 0.04">▫<sup>▫</sup><sub>□</sub></span>
+						<span id="shardsLabel" class="input-group-text input-group-digits" style="font-size:16px" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Increases △ index and cost, reduces amount per purchase by 0.04">▫<sup>▫</sup><sub>□</sub></span>
 						
 					</div>
-					<input id="shards" type="text" class="form-control form-input" style="text-align: center;" disabled="true" value="0" />
+					<input id="shards" type="text" class="form-control form-input" style="text-align: center;" disabled="true" />
 					<div class="input-group-append">
 						<span class="input-group-btn">
 							<button id="shardsBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('shards');">+1</button>
@@ -83,11 +85,11 @@
 				<!--button id="shardsButton" class="btn btn-primary btn-lg" style="display:none" type="button" onclick="buys('shards');" /-->
 			</div>
 			<div id="shapesInfo">
-				<div>Triangle operator   a  = a<sup>a</sup>. △(2) = 2<sup>2</sup> = 4</div>
-				<div style="margin-top: -37px; margin-left:125.5px; font-size:30px">△</div>
+				<div>Triangle operator   △(a)  = a<sup>a</sup>. △(2) = 2<sup>2</sup> = 4</div>
+				<!--div style="margin-top: -37px; margin-left:125.5px; font-size:30px">△</div-->
 				<div id="squareExplain" style="display:none">
-					<div>Square operator   a  = a in a triangles. □(2) = △(△(2)) = (2<sup>2</sup>)<sup>2<sup>2</sup></sup> = 4<sup>4<sup> = 256</div>
-					<div style="margin-top: -41px; margin-left:122px; font-size:33px;">□</div>
+					<div>Square operator  ▢(a)  = a in a triangles. ▢(2) = △(△(2)) = (2<sup>2</sup>)<sup>2<sup>2</sup></sup> = 4<sup>4<sup> = 256</div>
+					<!--div style="margin-top: -41px; margin-left:122px; font-size:33px;">□</div-->
 					<div>Square shard ▫<sup>▫</sup><sub>□</sub> only adds 1/10th of a triangle operation. 1 ▫<sup>▫</sup><sub>□</sub> results in △<sub>1.1</sub>(2)= (2<sup>2</sup>)<sup>(2<sup>2</sup>)<sup>0.1</sup></sup> = 4.91</div>
 				</div>
 			</div>
@@ -95,7 +97,10 @@
 		
 		<!-- Flip -->
 		<div id="Flip" class="tabcontent" style="display:none;">
-			<h3 id="flippedTriangles" class="page-header"></h3>
+			<div class="d-flex justify-content-between">
+				<div id="flipped" class="p-2"></div>
+				<div id="flipMult" class="p-2"></div>
+			</div>
 			<div id="flipUpgRow1" class="row justify-content-md-center" style="margin-bottom:10px;">
 				<div class="col col-3">
 					<button id="flippedUpg0" type="button" class="btn btn-outline-primary" onclick="flippedBuy(0)">
@@ -125,17 +130,54 @@
 					</button>
 				</div>
 				<div class="col col-3">
-					<button id="flippedUpg5" type="button" class="btn btn-outline-primary" onclick="flippedBuy(5)">Get x10 flipped stat<br><br>Cost: 2500 ▽</sub></span>
+					<button id="flippedUpg5" type="button" class="btn btn-outline-primary" onclick="flippedBuy(5)">
+						<span>Get x10 flipped stat<br><br>Cost: 2500 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
-					<button id="flippedUpg6" type="button" class="btn btn-outline-primary" onclick="flippedBuy(6)">▫<sup>▫</sup><sub>□</sub> amount increases<br> △ base value<br>Cost: 3000 ▽</sub></span>
+					<button id="flippedUpg6" type="button" class="btn btn-outline-primary" onclick="flippedBuy(6)">
+						<span>▫<sup>▫</sup><sub>□</sub> amount increases<br> △ base value<br>Cost: 3000 ▽</span>
+					</button>
 				</div>
 				<div class="col col-3">
-					<button id="flippedUpg7" type="button" class="btn btn-outline-primary" onclick="flippedBuy(7)">▫<sup>▫</sup><sub>□</sub> per purchase +0.025<br><br>Cost: 4000 ▽</sub></span>
+					<button id="flippedUpg7" type="button" class="btn btn-outline-primary" onclick="flippedBuy(7)">
+						<span>▫<sup>▫</sup><sub>□</sub> per purchase +0.025<br><br>Cost: 4000 ▽</span>
+					</button>
 				</div>
 			</div>
-			<div id="flipUpgDouble" class="d-flex justify-content-center" style="margin-top:50px;">
+			<div id="flipUpgRow3" style="display:none; border:1px solid gray; borde-radius:0.25em; padding-left:5px; padding-right:5px;">
+				<div class="row justify-content-md-center" style="margin-bottom:10px;">
+					<span>You can only choose one upgrade:</span>
+				</div>
+				<div class="row justify-content-md-center" style="margin-bottom:10px;">
+					<div class="col col-3">
+						<button id="HfUpg0" type="button" class="btn btn-outline-primary" onclick="HfBuy(0)">
+							<span>Gain 1% of ▽ on flip per tick<br> </span>
+						</button>
+					</div>
+					<div class="col col-3">
+						<button id="HfUpg1" type="button" class="btn btn-outline-primary" onclick="HfBuy(1)">
+							<span>▽ boosts flipped stat gain<br><i>floor( log10(▽) )</i></span>
+						</button>
+					</div>
+					<div class="col col-3">
+						<button id="HfUpg2" type="button" class="btn btn-outline-primary" onclick="HfBuy(2)">
+							<span>???<br> </span>
+						</button>
+					</div>
+					<div class="col col-3">
+						<button id="HfUpg3" type="button" class="btn btn-outline-primary" onclick="HfBuy(3)">
+							<span>???<br> </span>
+						</button>
+					</div>
+				</div>
+				<div class="row justify-content-md-center" style="margin-bottom:10px;">
+					<button id="flippedUpg10" type="button" class="btn btn-secondary" onclick="resetHfUpg(10)">
+						<span>Reset</span>
+					</button>
+				</div>
+			</div>
+			<div id="flipUpgMisc" class="d-flex justify-content-center" style="margin-top:50px;">
 				<div class="col col-3">
 					<button id="trianglesAutoUpg" type="button" class="btn btn-outline-primary" onclick="buyAuto('triangles')">
 						<span>Unlock △ Autobuyer<br>Cost: 500 ▽</span>
@@ -147,15 +189,11 @@
 					</button>
 				</div>
 			</div>
-			<div class="d-flex justify-content-between">
-				<div id="flipped" class="p-2"></div>
-				<div id="flipMult" class="p-2"></div>
-			</div>
 		</div>
 		
 		<!-- Achievements -->
 		<div id="Achievements" class="tabcontent" style="display:none;">
-			<h3 id="flippedTriangles" class="page-header">Achivements have unique bonuses, mouse over to find out</h3>
+			<h3 class="page-header">Achivements have unique bonuses, mouse over to find out</h3>
 			<div class="container">
 				<div class="row justify-content-md-left">
 					<div class="col col-2">
@@ -177,7 +215,7 @@
 						<span id="ach3ph" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-content="???">
 							<div "type="button" class="btn btn-outline-primary" style="pointer-events: none;">Life sHard</div>
 						</span>
-						<span id="ach3a" style="display:none" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Purchase first ▫<sup>▫</sup><sub>□</sub><br/><b>Reward:</b><br/>Tick speed x1.25">
+						<span id="ach3a" style="display:none" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Purchase first ▫<sup>▫</sup><sub>□</sub><br/><b>Reward:</b><br/>Tick speed x1.25<br>Unlock second row of flip upgrades">
 							<div id="ach3" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Life sHard</div>
 						</span>
 					</div>
@@ -190,7 +228,7 @@
 						<span id="ach5ph" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-content="???">
 							<div "type="button" class="btn btn-outline-primary" style="pointer-events: none;">Disappointed</div>
 						</span>
-						<span id="ach5a" style="display:none" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach Infinity resource">
+						<span id="ach5a" style="display:none" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach Infinity resource<br><b>Reward:</b><br>Unlock third row of flip upgrades">
 							<div id="ach5" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Disappointed</div>
 						</span>
 					</div>

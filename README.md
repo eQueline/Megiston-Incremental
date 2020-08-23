@@ -1,5 +1,10 @@
 # Megiston-Incremental
 
+Version 0.14:
+Featuring crappy halfflip transition animation!
+ - Started on post-"Infinity" content: halfflip
+ - Better notification handling
+
 Version 0.12:
  - Added game saving
  - Added notification log tab
