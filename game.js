@@ -818,7 +818,7 @@ function loadGame(log = true) {
 	}
 }
 
-var costs = [[1,5,25,100,150,2500,3000,4000,5e9,2e10,5e12,1e15]];
+var costs = [[1,5,25,100,150,2500,3000,4000,2e9,2e10,5e12,1e15]];
 var shardCosts = [8.5, 8, 6.80, 4.95, 4.9];
 var game = {};
 var fast = false;
