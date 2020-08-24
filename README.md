@@ -1,5 +1,9 @@
 # Megiston-Incremental
 
+Version 0.15:
+ - More upgrades and achievements after half-flip, balanced up to 9 shards
+ - Save game button
+
 Version 0.14:
 Featuring crappy halfflip transition animation!
  - Started on post-"Infinity" content: halfflip
