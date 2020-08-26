@@ -81,15 +81,15 @@ ol > li {
 .btn-inline {
 	width: 90px;
 	border-radius: 0;
-	border-right: 0;
+	/*border-right: 0;*/
 }
 
 .form-input {
-	border-right: 0px;
+	/*border-right: 0px;*/
 }
 
 .input-group-append {
-	margin-left: 0px
+	/*margin-left: 0px*/
 }
 
 .input-group-digits {
@@ -140,7 +140,7 @@ ol > li {
 }
 
 .notify span {
-	color: #28a745;
+	color: #a03333;
 	width: auto;
 	margin: 5px;
 }
@@ -215,16 +215,16 @@ ol > li {
 		-ms-transform: rotate(1deg);
 	}
 	70%{
-		transform: rotate(90deg);
-		-webkit-transform: rotate(90deg);
-		-moz-transform: rotate(90deg);
-		-ms-transform: rotate(90deg);
+		transform: rotate(90deg) scale(5);
+		-webkit-transform: rotate(90deg) scale(5);
+		-moz-transform: rotate(90deg) scale(5);
+		-ms-transform: rotate(90deg) scale(5);
 	}
 	100%{
-		transform: rotate(900deg);
-		-webkit-transform: rotate(900deg);
-		-moz-transform: rotate(900deg);
-		-ms-transform: rotate(900deg);
+		transform: rotate(900deg) scale(5);
+		-webkit-transform: rotate(900deg) scale(5);
+		-moz-transform: rotate(900deg) scale(5);
+		-ms-transform: rotate(900deg) scale(5);
 	}
 }
 
@@ -249,28 +249,6 @@ ol > li {
 
 .rt45 {
 	animation-name: rotation45;
-    animation-duration: 5000ms;
+    animation-duration: 3000ms;
     animation-fill-mode: forwards;
-}
-
-@keyframes wipe{
-     0% { }
-     20%  { z-index:11; transform: translateX(-100%); }
-     40%   { transform: translateX(0); width:100%; z-index:11; box-shadow: 10px 10px 5px #eaeaea;}
-     60%   { transform: translateX(0); width:100%;z-index:11; box-shadow: 10px 10px 5px #eaeaea;}
-     80%   { transform:  width:60%;z-index:11; box-shadow: 10px 10px 5px #eaeaea;}
-     100%   { transform:  width:0%;z-index:11; box-shadow: none;}
-}
-
-.wipe-trans {
-  animation: wipe 4s ease-in-out;
-  }
-  
-.wipe-transition {
-  position:absolute;
-  height:100%;
-  width:0%;
-  background:#f0f0f0;
-  transition:2s all ease-in-out;
-  -webkit-transition:2s all ease-in-out;
 }

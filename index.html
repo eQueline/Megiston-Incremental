@@ -16,13 +16,26 @@
 	<div class="wipe-transition"></div>
 	<div id="root" class="container">
 		<div class="d-flex justify-content-between">
-			<div></div>
-			<button id="flipButton" class="btn btn-primary btn-lg" style="display:none" type="button" onclick="flip();" />
+			<div class="col">
+				<button class="btn btn-primary btn-lg" type="button" style="opacity: 0"></button>
+			</div>
+			<div class="col">
+				<button id="squareButton" class="btn btn-primary btn-lg" style="display:none" type="button" data-target="#combineSquareConfirm" />
+			</div>
+			<div class="col">
+				<button id="flipButton" class="btn btn-primary btn-lg" style="display:none" type="button" onclick="flip();" />
+			</div>
 		</div>
 		<div class="d-flex justify-content-between">
-			<h2 id="resource" class="page-header">Resource: 0</h2>
-			
-			<h2 id="flippedTriangles" class="page-header" style="display: none">▽: 0</h2>
+		<div class="col">
+			<h2 id="resource" class="page-header" style="text-align:left;">Resource: 0</h2>
+		</div>
+		<div class="col">
+			<h2 id="combinedSquares" class="page-header" style="text-align:left; display: none">▢: 0</h2>
+		</div>
+		<div class="col">
+			<h2 id="flippedTriangles" class="page-header" style="text-align:left; display: none;">▽: 0</h2>
+		</div>
 		</div>
 		<div class="tab">
 			<div class="row">
@@ -30,7 +43,7 @@
 					<div class="row justify-content-start">
 						<button id="TrianglesTab" class="col-3 tablinks active" onclick="openTab(event, 'Triangles');">Triangles</button>
 						<button id="FlipTab" class="col-2 tablinks" onclick="openTab(event, 'Flip');" style="display:none">Flip</button>
-						<button id="SquaresTab" class="col-3 tablinks active" onclick="openTab(event, 'Squares');" style="display:none">Squares</button>
+						<button id="SquaresTab" class="col-3 tablinks" onclick="openTab(event, 'Squares');" style="display:none">Squares</button>
 						<button id="AchievementsTab" class="col-3 tablinks" onclick="openTab(event, 'Achievements');">Achievements</button>
 					</div>
 				</div>
@@ -52,12 +65,8 @@
 					</div>
 					<input id="triangles" type="text" class="form-control form-input" style="text-align: center;" disabled="true">
 					<div class="input-group-append">
-						<span class="input-group-btn">
-							<button id="trianglesBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('triangles');">+0.1</button>
-						</span>
-						<span class="input-group-btn">
-							<button id="trianglesBuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('triangles');">Buy Max</button>
-						</span>
+						<button id="trianglesBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('triangles');">+0.1</button>
+						<button id="trianglesBuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('triangles');">Buy Max</button>
 						<div id="trianglesAutobuyContainer" class="input-group-text" style="display:none" onclick="switchAutobuy('triangles');  return true;">
 							<input id="trianglesAutobuy" type="checkbox" onclick="return true;"> Auto
 						</div>
@@ -65,7 +74,6 @@
 						<span id="trianglesIncome" class="input-group-text input-group-digits" style="text-align: center; background-color:#eee;" disabled="true" >1</span>
 					</div>
 				</div>
-				
 			</form>
 			<form id="shardsContainer" style="display:none" class="form-inline">
 				<div class="input-group mb-3">
@@ -75,14 +83,30 @@
 					</div>
 					<input id="shards" type="text" class="form-control form-input" style="text-align: center;" disabled="true" />
 					<div class="input-group-append">
-						<span class="input-group-btn">
-							<button id="shardsBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('shards');">+1</button>
-						</span>
-						<span class="input-group-btn" style="display:none";>
-							<button id="shardsBuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('shards');" disabled="true">Buy Max</button>
-						</span>
+						<button id="shardsBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('shards');">+1</button>
+						<button id="shardsBuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('shards');" disabled="true">Buy Max</button>
+						<div id="shardsAutobuyContainer" class="input-group-text" style="display:none" onclick="switchAutobuy('shards');  return true;">
+							<input id="shardsAutobuy" type="checkbox" onclick="return true;"> Auto
+						</div>
 						<span id="shardsCost" class="input-group-text input-group-digits" style="text-align: center" disabled="true"></span>
 						<!--span id="shardsEffect" class="input-group-text" style="text-align: center" disabled="true"></span-->
+					</div>
+				</div>
+			</form>
+			<form id="triangles2container" class="form-inline" style="display:none;">
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span id="triangles2Label" class="input-group-text input-group-digits" style="font-size:16px"  data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Multiplies regular △ value and cost. Unaffected by bonuses applied to △"><sub>2</sub>△</span>
+					</div>
+					<input id="triangles2" type="text" class="form-control form-input" style="text-align: center;" disabled="true">
+					<div class="input-group-append">
+						<button id="triangles2BuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('triangles2');">+0.1</button>
+						<button id="triangles2BuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('triangles2');">Buy Max</button>
+						<div id="triangles2AutobuyContainer" class="input-group-text" style="display:none" onclick="switchAutobuy('triangles2');  return true;">
+							<input id="triangles2Autobuy" type="checkbox" onclick="return true;"> Auto
+						</div>
+						<span id="triangles2Cost" class="input-group-text input-group-digits" style="text-align: center" disabled="true" >Cost: 10</span>
+						<span id="triangles2Income" class="input-group-text input-group-digits" style="text-align: center; background-color:#eee;" disabled="true" >1</span>
 					</div>
 				</div>
 			</form>
@@ -95,8 +119,11 @@
 					<br>
 					Square shards ▫<sup>▫</sup><sub>□</sub> only add a fraction of a triangle operation (index):<br>
 					+0.3 △ index results in △<sub>1.3</sub>(2)= (2<sup>2</sup>)<sup>(2<sup>2</sup>)<sup>0.3</sup></sup> = 8.18<br>
-					+1.1 △ index results in △<sub>2.1</sub>(2)= (2<sup>2</sup>)<sup>(2<sup>2</sup>)<sup>1.1</sup></sup> = 583.9
+					+1.1 △ index results in △<sub>2.1</sub>(2)= (2<sup>2</sup>)<sup>(2<sup>2</sup>)<sup>1.1</sup></sup> = 583.9<br>
 					<br>
+					Tap/Mouse over shape title get its description<br>
+					<br>
+					Don't forget to check your achievements often. Some of them are very helpful for your progress!
 				</div>
 			</div>
 		</div>
@@ -107,7 +134,7 @@
 				<div id="flipped" class="p-2"></div>
 				<div id="flipMult" class="p-2"></div>
 			</div>
-			<div id="flipUpgRow1" class="row justify-content-md-center upgrade-row"">
+			<div id="flipUpgRow1" class="row justify-content-md-center upgrade-row">
 				<div class="col col-3">
 					<button id="flippedUpg0" type="button" class="btn btn-outline-primary" onclick="flippedBuy(0)">
 						<span>Tick speed x1.5<br><br>Cost: 1 ▽</span>
@@ -125,29 +152,29 @@
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg3" type="button" class="btn btn-outline-primary" onclick="flippedBuy(3)">
-						<span>Unlock ▢<br><br>Cost: 100 ▽</span>
+						<span>Unlock ▢<br><br>Cost: 50 ▽</span>
 					</button>
 				</div>
 			</div>
 			<div id="flipUpgRow2" class="row justify-content-md-center upgrade-row" style="display:none;">
 				<div class="col col-3">
 					<button id="flippedUpg4" type="button" class="btn btn-outline-primary" onclick="flippedBuy(4)">
-						<span>▫<sup>▫</sup><sub>□</sub> cost -0.2<br><br>Cost: 150 ▽</span>
+						<span>▫<sup>▫</sup><sub>□</sub> cost -0.2<br><br>Cost: 100 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg5" type="button" class="btn btn-outline-primary" onclick="flippedBuy(5)">
-						<span>Get x10 flipped stat<br><br>Cost: 2500 ▽</span>
+						<span>Get x10 flipped stat<br><br>Cost: 1000 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg6" type="button" class="btn btn-outline-primary" onclick="flippedBuy(6)">
-						<span>▫<sup>▫</sup><sub>□</sub> amount increases<br> △ base value<br>Cost: 3000 ▽</span>
+						<span>▫<sup>▫</sup><sub>□</sub> amount increases<br> △ base value<br>Cost: 2000 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg7" type="button" class="btn btn-outline-primary" onclick="flippedBuy(7)">
-						<span>▫<sup>▫</sup><sub>□</sub> base value +0.05<br><br>Cost: 4000 ▽</span>
+						<span>▫<sup>▫</sup><sub>□</sub> base value +0.05<br><br>Cost: 3000 ▽</span>
 					</button>
 				</div>
 			</div>
@@ -163,12 +190,12 @@
 					</div>
 					<div class="col col-3">
 						<button id="HfUpg2" type="button" class="btn btn-outline-primary" onclick="hfBuy(2)">
-							<span>▽ boosts flipped stat gain<br><i>floor( log10(▽) )<sup>2</sup></i></span>
+							<span>▽ boosts flipped stat gain<br><i>floor( log10(▽) )<sup>3</sup></i></span>
 						</button>
 					</div>
 					<div class="col col-3">
 						<button id="HfUpg3" type="button" class="btn btn-outline-primary" onclick="hfBuy(3)">
-							<span>▽ boosts income exponent<br><i>floor( log10(▽) )</i></span>
+							<span>▽ boosts income<br><i>floor( log10(▽) )</i></span>
 						</button>
 					</div>
 				</div>
@@ -181,29 +208,34 @@
 			<div id="flipUpgRow4" class="row justify-content-md-center upgrade-row" style="display:none;">
 				<div class="col col-3">
 					<button id="flippedUpg8" type="button" class="btn btn-outline-primary" onclick="flippedBuy(8)">
-						<span>Tickspeed x1.8<br><br>Cost: 2e9 ▽</span>
+						<span>Tickspeed x1.8<br><br>Cost: 1e9 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg9" type="button" class="btn btn-outline-primary" onclick="flippedBuy(9)">
-						<span>△ cost scales better<br><br>Cost: 2e10 ▽</span>
+						<span>△ cost scales better<br><br>Cost: 1e10 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg10" type="button" class="btn btn-outline-primary" onclick="flippedBuy(10)">
-						<span>Finished achievements add <br>+0.01 △ base value<br>Cost: 5e12 ▽</span>
+						<span>Finished achievements add <br>+0.01 △ base value<br>Cost: 1e12 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg11" type="button" class="btn btn-outline-primary" onclick="flippedBuy(11)">
-						<span>▫<sup>▫</sup><sub>□</sub> cost scales better after 5<br><br>Cost: 1e15 ▽</span>
+						<span>▫<sup>▫</sup><sub>□</sub> cost scales better after 0.5<br><br>Cost: 2e14 ▽</span>
 					</button>
 				</div>
 			</div>
 			<div id="flipUpgMisc" class="d-flex justify-content-center" style="margin-top:50px;">
 				<div class="col col-3">
 					<button id="trianglesAutoUpg" type="button" class="btn btn-outline-primary" onclick="buyAuto('triangles')">
-						<span>Unlock △ Autobuyer<br>Cost: 500 ▽</span>
+						<span>Unlock △ Autobuyer<br>Cost: 400 ▽</span>
+					</button>
+				</div>
+				<div id="shardsAutoUpgContainer" class="col col-3" style="display:none">
+					<button id="shardsAutoUpg" type="button" class="btn btn-outline-primary" onclick="buyAuto('shards')">
+						<span>Unlock ▫<sup>▫</sup><sub>□</sub> Autobuyer<br>Cost: 1e40 ▽</span>
 					</button>
 				</div>
 				<div class="col col-3">
@@ -217,84 +249,146 @@
 			</div>
 		</div>
 		
+		<!-- Squares -->
 		<div id="Squares" class="tabcontent" style="display:none;">
-			
+			<div class="d-flex justify-content-between">
+				<div id="combined" class="p-2"></div>
+				<div id="combineMulti" class="p-2"></div>
+			</div>
+			<form class="form-inline justify-content-center">
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span id="cutSquaresLabel" class="input-group-text input-group-digits" style="font-size:16px" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Spend ▢ to get base △ index bonus">Cut ▢ into △ index:</span>
+					</div>
+					<div class="input-group-append">
+						<span class="input-group-btn">
+							<button id="cutSquaresBuyAmount" class="btn btn-group btn-inline" type="button" onclick="buy('trianglesIndex');"> Buy 0.50</button>
+						</span>
+						<span class="input-group-btn">
+							<button id="cutSquaresBuyMax" class="btn btn-group btn-inline" type="button" onclick="buyMax('trianglesIndex');" style="display: none;">Buy Max</button>
+						</span>
+						<span id="cutSquaresCost" class="input-group-text input-group-digits" style="text-align: center" disabled="true" >Cost: 1</span>
+					</div>
+				</div>
+			</form>
+			<div id="squaresUpgRow1" class="row justify-content-md-center upgrade-row">
+				<div class="col col-3">
+					<button id="squaresUpg0" type="button" class="btn btn-outline-primary" onclick="sqaureUpgBuy(0)">
+						<span>Buy additional △ operator<br><br>Cost: 5 ▢</span>
+					</button>
+				</div>
+			</div>
 		</div>
 		
 		<!-- Achievements -->
 		<div id="Achievements" class="tabcontent" style="display:none;">
-			<h3 class="page-header">Some achivements have unique bonuses, mouse over to find out</h3>
-			<div class="container">
-				<div class="row justify-content-md-left">
-					<div class="col col-2">
-						<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for the first time<br/><b>Reward:</b><br/>Start with △ purchased 10 times">
-							<div id="ach0" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Meaningful start</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 4.3 △<br/><b>Reward:</b><br/>Get 1 more ▽ on flip">
-							<div id="ach1" type="button" class="btn btn-outline-primary" style="pointer-events: none;">A tiny wall</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1e10 resource<br/><b>Reward:</b><br/>Flipped stat shifts △ cost<br/><i>floor( log(flipped) )</i>">
-							<div id="ach2" type="button" class="btn btn-outline-primary" style="pointer-events: none;">△(10)</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Purchase first ▫<sup>▫</sup><sub>□</sub><br/><b>Reward:</b><br/>Tick speed x1.25">
-							<div id="ach3" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Life sHard</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip 111 times<br/><b>Reward:</b><br/>△ per purchase +0.01">
-							<div id="ach4" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Is that enough?</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Do a half-flip<br><b>Reward:</b><br>Unlock half-flip upgrades">
-							<div id="ach5" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Disappointed</div>
-						</span>
-					</div>
+			<h3 class="page-header">Some achivements have unique bonuses, tap/mouse over to find out</h3>
+			<div class="row justify-content-md-left">
+				<div class="col col-2">
+					<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for the first time<br/><b>Reward:</b><br/>Start with △ purchased 10 times">
+						<div id="ach0" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Meaningful start</div>
+					</span>
 				</div>
-				<div id="postHfAch" class="row justify-content-md-left">
-					<div class="col col-2">
-						<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1.78e308 resource after half-flip">
-							<div id="ach6" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Through the roof</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for 7.7e7 ▽ without buying △<br/><b>Reward:</b><br/>Purchased △ boost income exponent">
-							<div id="ach7" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Don't need those</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach e1e10 resource<br/><b>Reward:</b><br/>▽ multiplier upgrade value +0.1</i>">
-							<div id="ach8" type="button" class="btn btn-outline-primary" style="pointer-events: none;">△<sub>2</sub>(10)</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Have exactly 6.9 △">
-							<div id="ach9" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Ni.ce</div>
-						</span>
-					</div>
-					<div class="col col-2">
-						<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach x1000 ▽ gain multiplier<br/><b>Reward:</b><br/>Unlock ▽ gain multiplier Autobuyer">
-							<div id="ach10" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Rebuyable</div>
-						</span>
-					</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 4.3 △<br/><b>Reward:</b><br/>Get 1 more ▽ on flip">
+						<div id="ach1" type="button" class="btn btn-outline-primary" style="pointer-events: none;">A tiny wall</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1e10 resource<br/><b>Reward:</b><br/>Flipped stat shifts △ cost<br/><i>floor( log(flipped) )</i>">
+						<div id="ach2" type="button" class="btn btn-outline-primary" style="pointer-events: none;">△(10)</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Purchase first ▫<sup>▫</sup><sub>□</sub><br/><b>Reward:</b><br/>Tick speed x1.25">
+						<div id="ach3" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Life sHard</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip 111 times<br/><b>Reward:</b><br/>△ per purchase +0.01">
+						<div id="ach4" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Is that enough?</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Do a half-flip<br><b>Reward:</b><br>Unlock half-flip upgrades">
+						<div id="ach5" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Disappointed</div>
+					</span>
+				</div>
+			</div>
+			<div id="postHfAch" class="row justify-content-md-left">
+				<div class="col col-2">
+					<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1.78e308 resource after half-flip">
+						<div id="ach6" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Through the roof</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for 7.7e7 ▽ without buying △<br/><b>Reward:</b><br/>Purchased △ boost income">
+						<div id="ach7" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Don't need those</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach e1e10 resource<br/><b>Reward:</b><br/>▽ multiplier upgrade value +0.1</i>">
+						<div id="ach8" type="button" class="btn btn-outline-primary" style="pointer-events: none;">△<sub>2</sub>(10)</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Have exactly 6.9 △">
+						<div id="ach9" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Ni.ce</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach x1000 ▽ gain multiplier<br/><b>Reward:</b><br/>Unlock ▽ gain multiplier Autobuyer">
+						<div id="ach10" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Rebuyable</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Combine once<br/><b>Reward:</b><br/>Unlock Squares">
+						<div id="ach11" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Finally</div>
+					</span>
+				</div>
+			</div>
+			<div id="postHfAch" class="row justify-content-md-left">
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Combine with 0 times flipped<br/><b>Reward:</b><br/>Don't reset flip upgrades on combine">
+						<div id="ach12" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Like a Pro</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 11 ▢">
+						<div id="ach13" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Constructor</div>
+					</span>
+				</div>
+				<div class="col col-2">
+					<span data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Have △ index higher than △ value">
+						<div id="ach14" type="button" class="btn btn-outline-primary" style="pointer-events: none;">Inefficient</div>
+					</span>
 				</div>
 			</div>
 		</div>
 		
 		<!-- Logs -->
 		<div id="Logs" class="tabcontent" style="display:none;"></div>
-	</div>
-	<div class="text-center" style="margin:10px;">
-		<button id="saveButton" class="btn btn-success btn-lg" type="button" onclick="saveGame();">Save game</button>
-		<!--button id="shardsButton" class="btn btn-primary btn-lg" style="display:none" type="button" onclick="buys('shards');" /-->
+		
+		<div class="text-center" style="margin:10px;">
+			<button id="saveButton" class="btn btn-success btn-lg" type="button" onclick="saveGame();">Save game</button>
+			<!--button id="shardsButton" class="btn btn-primary btn-lg" style="display:none" type="button" onclick="buys('shards');" /-->
+		</div>
 	</div>
 	
-	<div id="notify" class="notify" style="top: 0px; right: 0px;"></div>
+	
+	<div class="modal fade" id="combineSquareConfirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					Combining will reset resource, triangles, shards and all flip upgrades
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="combineSquares();">Combine!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="notify" class="notify" style="top: 0px; left: 0px;"></div>
 </body>
 </html>

@@ -1,5 +1,14 @@
 # Megiston-Incremental
 
+Version 0.16:
+ - Triangle cost rebalance
+ - Flip upgrades cost rebalance
+ - Added square prestige layer and its first 2 available upgrades
+ - New achievements
+ - Different half-flip animation
+ - Moved log notifications to top-left anc changed font color
+ - More information and tips on Shapes tab
+
 Version 0.15:
  - More upgrades and achievements after half-flip, balanced up to 9 shards
  - Save game button
