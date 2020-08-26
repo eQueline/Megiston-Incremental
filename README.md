@@ -1,5 +1,10 @@
 # Megiston-Incremental
 
+Version 0.17:
+ - Added progress bars
+ - Achievement "A tiny wall": requirement 4.3->4.4
+ - Fixed Shards BuyMax button appearing on half-flip
+
 Version 0.16:
  - Triangle cost rebalance
  - Flip upgrades cost rebalance

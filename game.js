@@ -289,12 +289,28 @@ function checkUpgrade(type, id) {
 	}
 }
 
+function getPercentage(vPrev, vCur, vNext) {
+	if (vCur.gte(vNext)) return new Decimal(100);
+	if (vNext.lt(2e4)) return Decimal.min(1, Decimal.max(0, vCur.div(vNext))).mul(100).floor();
+	if (vCur.lte(vPrev)) return new Decimal(0);
+	let diff = vNext.div(vPrev);
+	if (diff.lt(1e3)) {
+		return Decimal.min(1, Decimal.max(0, vCur.sub(vPrev).div(vNext.sub(vPrev)))).mul(100).floor();
+	} else {
+		let prev = vPrev.log10();
+		let next = vNext.log10();
+		let cur = vCur.log10();
+		return getPercentage(prev, cur, next);
+		diff = vNext.div(vPrev);
+	}
+}
+
 function update() {
 	// shard
 	//let trianglesSpent = new Decimal(0);
 	let trianglesValue = new Decimal(1);
 	let shardsValue = new Decimal(0);
-	
+	let shards
 	if (checkUpgrade('flip', 3))  {
 		if (typeof(game.shards)== 'undefined') {
 			revealShards();
@@ -303,7 +319,7 @@ function update() {
 			game.shards.bought = new Decimal(0);
 			$('#shardsButton').show();
 		}
-		let shards = game.shards.bought;
+		shards = game.shards.bought;
 		//trianglesSpent = getTotalShardCost();
 		let shardsBuyAmount = new Decimal(0.1);
 		
@@ -320,7 +336,6 @@ function update() {
 		//shardsBuyAmount = Decimal.min(shardsBuyAmount, new Decimal(1).sub(shardsValue));
 		$('#shards').attr('value', formatValue(game.shards.value, 2));
 		$('#shardsBuyAmount').text(format('Buy {0}', formatValue(shardsBuyAmount, 2)));
-		$('#shardsCost').text(format('Cost: {0} △', formatValue(getShardCost(shards.add(1)), 2)));
 		//$('#shardsButton').text(format('get 0.1 shard for {0} △', flippedAmount));
 	}
 
@@ -417,6 +432,7 @@ function update() {
 		if (game.achievements[7])
 			income = income.pow(game.triangles.bought);
 	}
+	
 	if (income.gte(1.78e308) && (typeof(game.halfflip) == 'undefined' || shardsValue.lt(0.5))) {
 		income = new Decimal(1.78e308);
 		$('#trianglesIncome').text('Infinity per tick');
@@ -439,12 +455,25 @@ function update() {
 	else {
 		$('#trianglesLabel').html('△');
 	}
-	let cost = getTriangleCost(game.triangles.bought.add(1));
-	if (cost.gte(1.78e308) && (typeof(game.halfflip) == 'undefined' || shardsValue.lt(0.5))) {
-		cost = new Decimal(1.78e308);
+	let triangleCost = getTriangleCost(game.triangles.bought.add(1));
+	if (triangleCost.gte(1.78e308) && (typeof(game.halfflip) == 'undefined' || shardsValue.lt(0.5))) {
+		triangleCost = new Decimal(1.78e308);
 		$('#trianglesCost').text('Cost: Infinity');
-	} else
-		$('#trianglesCost').text(format('Cost: {0}', formatValue(cost, 2)));
+	} else {
+		let triangleCostPrev = getTriangleCost(game.triangles.bought);
+		let triangleCostText = format('Cost: {0}', formatValue(triangleCost, 2));
+		var percentage = getPercentage(triangleCostPrev, game.resource, triangleCost);
+		$('#trianglesCost').html(format('<div id="trianglesCostBar" class="progress-bar-cost" style="width:{0}%;"></div>{1}', percentage, triangleCostText));
+	}
+	
+	// shard cost bar
+	if (typeof(game.shards) != 'undefined') {
+		let shardPrevCost = getShardCost(shards);
+		let shardCost = getShardCost(shards.add(1));
+		let shardsCostText = format('Cost: {0} △', formatValue(shardCost, 2));
+		var percentage = getPercentage(shardPrevCost, game.triangles.value, shardCost);
+		$('#shardsCost').html(format('<div id="shardsCostBar" class="progress-bar-cost" style="width:{0}%;"></div>{1}', percentage, shardsCostText));
+	}
 	
 	//halfflip
 	if (typeof(game.halfflip) != 'undefined') {
@@ -457,7 +486,7 @@ function update() {
 	if (!game.achievements[0] && typeof(game.flip) != 'undefined' && game.flip.flipped.gt(0)) {
 		getAchievement(0);
 	}
-	if (!game.achievements[1] && game.triangles.value.gte(4.3)) {
+	if (!game.achievements[1] && game.triangles.value.gte(4.4)) {
 		getAchievement(1);
 	}
 	if (!game.achievements[2] && game.resource.gte(1e10)) {
@@ -834,7 +863,7 @@ function revealSquares() {
 	$('#SquaresTab').show();
 	$('#squareButton').attr('onclick', 'combineSquares()');
 	$('#flipUpgRow5').show()
-	$('#shardsBuyMax').show();
+	//$('#shardsBuyMax').show();
 	$('#shardsAutoUpgContainer').show();
 }
 
@@ -915,10 +944,13 @@ function tick() {
 	tickTimeout = setTimeout(tick, tickspeed);
 }
 
+var saveTimeout;
 function saveGame(log = true) {
 	window.localStorage['MegistonSave'] = JSON.stringify(game);
 	if (log) notify('Game saved', 4900, false);
-	setTimeout(saveGame, 60000);
+	if (saveTimeout != null)
+		clearTimeout(saveTimeout);
+	saveTimeout = setTimeout(saveGame, 60000);
 }
 
 function hardReset() {
@@ -1045,7 +1077,7 @@ function loadGame(log = true) {
 		game.achievements.forEach((a,i)=>$('#ach'+i).attr('class', a?'btn btn-outline-success':'btn btn-outline-primary'));
 		printLog();
 		if (log) notify('Game loaded', 4900, false);
-		game.version = 16;
+		game.version = 17;
 		saveGame(false);
 		tick();
 	}

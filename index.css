@@ -96,6 +96,7 @@ ol > li {
 	width: 150px;
 	justify-content: center;
 	cursor: default !important;
+	position: relative;
 }
 
 .input-group-text {
@@ -251,4 +252,15 @@ ol > li {
 	animation-name: rotation45;
     animation-duration: 3000ms;
     animation-fill-mode: forwards;
+}
+
+.progress-bar-cost {
+    content:'';
+    position:absolute;
+	display:inline;
+    background-color:#c0ccd982;
+    top:0; 
+	bottom:0;
+    left:0; 
+	width: 20%;
 }
