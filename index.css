@@ -62,7 +62,6 @@ ol > li {
 	border: 1px solid #ccc;
 }
 
-
 .mb-3 {
 	max-width: 900px;
 }
@@ -70,6 +69,38 @@ ol > li {
 .form-input {
 	width: 150px !important;
 	background-color: #fff !important;
+}
+
+.input-group-title {
+	font-size: 1.2rem;
+}
+
+.btn-outline-success:disabled {
+	background-color: #efe2;
+	font-weight: 500;
+}
+
+.btn-outline-success {
+	background-color: #efe2;
+	font-weight: 500;
+}
+
+.btn-outline-primary {
+	font-weight: 500;
+}
+
+.btn-primary {
+	/* text-shadow: 0px 2px 5px #3f4d3c; */
+}
+
+.upgrade-separator {
+	border-bottom:1px solid gray; 
+	padding-left:5px; 
+	padding-right:5px;
+}
+
+.btn:disabled {
+	opacity: unset;
 }
 
 .btn-group {
@@ -80,16 +111,7 @@ ol > li {
 
 .btn-inline {
 	width: 90px;
-	border-radius: 0;
-	/*border-right: 0;*/
-}
-
-.form-input {
-	/*border-right: 0px;*/
-}
-
-.input-group-append {
-	/*margin-left: 0px*/
+	align-items: center;
 }
 
 .input-group-digits {
@@ -120,6 +142,10 @@ ol > li {
 	margin-bottom: 10px;
 }
 
+.achievement {
+	font-size: 14px;
+}
+
 
 
 @keyframes disappear{
@@ -141,7 +167,9 @@ ol > li {
 }
 
 .notify span {
-	color: #a03333;
+	/* color: #a03333; */
+	background-color: #e9ecdf;
+	font-weight: 500;
 	width: auto;
 	margin: 5px;
 }
