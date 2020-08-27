@@ -1,4 +1,4 @@
-# Megiston-Incremental
+# [Megiston-Incremental](https://equeline.github.io/Megiston-Incremental)
 
 Version 0.19:
  - Renamed triangles tab to shapes
@@ -14,8 +14,8 @@ Version 0.19:
  - Fixed bugs, improved performance
  
 There were a lot of changes to internal structure. I tried to fix it on loading from older version save, but some error could probably slip by. 
-If something breaks, please create an issue on github or reply to my post in reddit feedback thread https://www.reddit.com/r/incremental_games/comments/idm056/feedback_friday_20200821/
-or contact in discord eQueline#0598
+If something breaks, please create an issue on github or reply to my post in [reddit feedback thread](https://www.reddit.com/r/incremental_games/comments/idm056/feedback_friday_20200821/)
+Or contact in discord eQueline#0598
 
 
 Version 0.17:
