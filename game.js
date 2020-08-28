@@ -731,7 +731,7 @@ function flip() {
 			hfBuy(0);
 			switchHfUpgReset();
 		}
-		if (!game.achievements[7] && game.triangles.bought.eq(0) && flippedAmount.gte(7.7e7))
+		if (!game.achievements[7] && game.triangles.bought.eq(10) && flippedAmount.gte(7.7e7))
 			getAchievement(7);
 	}
 	game.flip.flipped = game.flip.flipped.add(flipped);
