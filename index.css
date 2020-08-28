@@ -80,17 +80,46 @@ ol > li {
 	font-weight: 500;
 }
 
+.btn-outline-secondary {
+	position:relative;
+	margin-top:22px;
+}
+
 .btn-outline-success {
 	background-color: #efe2;
 	font-weight: 500;
+	position:relative;
+	margin-top:22px;
+}
+
+.btn-outline-success::after {
+	position:absolute;
+	top:0;
+	left:3px;
+	content: "✓";
+}
+
+.btn-upgrade::before {
+	position:absolute;
+	top: -25px;
+	color: #333;
+	left: 0;
+	font-weight: 500;
+	content: attr(data-content);
 }
 
 .btn-outline-primary {
 	font-weight: 500;
+	position:relative;
+	margin-top:22px;
 }
 
 .btn-primary {
 	/* text-shadow: 0px 2px 5px #3f4d3c; */
+}
+
+.btn-inline:disabled {
+	background-color: #eee;
 }
 
 .upgrade-separator {
@@ -123,6 +152,7 @@ ol > li {
 
 .input-group-text {
 	cursor: default !important;
+	background-color: #dae3ed;
 }
 
 .col {
@@ -286,7 +316,7 @@ ol > li {
     content:'';
     position:absolute;
 	display:inline;
-    background-color:#c0ccd982;
+    background-color:#a5b5c682;
     top:0; 
 	bottom:0;
     left:0; 

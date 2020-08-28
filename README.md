@@ -1,5 +1,18 @@
 # [Megiston-Incremental](https://equeline.github.io/Megiston-Incremental)
 
+If something breaks, please create an issue on github or reply to my post in [reddit feedback thread](https://www.reddit.com/r/incremental_games/comments/idm056/feedback_friday_20200821/)
+Or contact in discord eQueline#0598
+
+Version 0.20:
+ - Added tick indicators to purchased upgrades and earned achievements
+ - Added upgrades numbers for easy reference
+ - Swapped upgrade 2.2 and 3rd achievement bonuses
+ - Changed shard autobuyer price 1e35->1e20
+ - Improved cost progress visibility
+ - Fixed bugs
+ - Changed loading function to support future features. I thoroughly tested it, shouldn't break anything. But if anything is wrong, please contact me
+
+
 Version 0.19:
  - Renamed triangles tab to shapes
  - Moved cut to shapes tab ('cut' name is subject to change, so is 'second triangle')
@@ -12,10 +25,7 @@ Version 0.19:
  - Minor pre-square balance changes
  - Visual changes, mostly in upgrade screen
  - Fixed bugs, improved performance
- 
 There were a lot of changes to internal structure. I tried to fix it on loading from older version save, but some error could probably slip by. 
-If something breaks, please create an issue on github or reply to my post in [reddit feedback thread](https://www.reddit.com/r/incremental_games/comments/idm056/feedback_friday_20200821/)
-Or contact in discord eQueline#0598
 
 
 Version 0.17:
