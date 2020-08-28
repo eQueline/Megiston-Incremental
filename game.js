@@ -718,7 +718,7 @@ function flip() {
 	if (flippedAmount.lte(0)) return;
 	revealFlip();
 	let flipped = new Decimal(1);
-	if (achievements[2])
+	if (game.achievements[2])
 		flipped = flipped.mul(10);
 	if (typeof(game.halfflip) != 'undefined') {
 		if ((checkUpgrade('flip', 13) || game.halfflip.upgrades[0] == 2) && game.flip.value.gte(10))
