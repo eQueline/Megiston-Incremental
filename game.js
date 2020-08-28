@@ -226,8 +226,8 @@ function getTriangleCost(bought, type = 1) {
 		else 
 			cost = cost.pow(1.3);
 	}
-	if (cost.lt(0)) 
-		cost = new Decimal(0);
+	if (cost.lt(1)) 
+		cost = new Decimal(1);
 	return cost;
 }
 
