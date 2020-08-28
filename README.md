@@ -3,6 +3,21 @@
 If something breaks, please create an issue on github or reply to my post in [reddit feedback thread](https://www.reddit.com/r/incremental_games/comments/idm056/feedback_friday_20200821/)
 Or contact in discord eQueline#0598
 
+
+Version 0.21:
+ - "Meaningful start" reward changed "Start with 10 purchased triangles"->"Triangle income x2"
+ - "Through the roof" achievement now grants "Start with 10 purchased triangles"
+ - Reduced costs of some second row flip upgrades, and 4.4 upgrade
+ - Changed late pyramid achievements
+ - Flipped triangle gain starts from 1e3 instead of 1e4
+ - Rebranding: white triangle(cut) -> lozenge; 2nd triangle -> star
+I'm still not satisfied with those shapes and names. Probably will change later. Again.
+ - Rebalanced lozenge cost
+ - Rebalanced star cost
+ - Increased pyramid costs
+ - Huge rebalance of end-game square gain and last flip upgrades. Now its better to do longer runs
+ 
+
 Version 0.20:
  - Added tick indicators to purchased upgrades and earned achievements
  - Added upgrades numbers for easy reference

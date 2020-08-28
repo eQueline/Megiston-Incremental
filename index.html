@@ -63,7 +63,7 @@
 			<form class="form-inline">
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<span id="trianglesLabel" class="input-group-text input-group-digits input-group-title">▲</span>
+						<span id="trianglesLabel" class="input-group-text input-group-digits input-group-title" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="<b>Triangle</b><br/>Main income operator">▲</span>
 					</div>
 					<input id="triangles" type="text" class="form-control form-input" style="text-align: center;" disabled="true">
 					<div class="input-group-append">
@@ -81,7 +81,7 @@
 			<form id="shardsContainer" style="display:none" class="form-inline">
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<span id="shardsLabel" class="input-group-text input-group-digits input-group-title" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Increases ▲ index and cost, reduces amount per purchase by 0.04 (minimum 0.01)">▫<sup>▫</sup><sub>□</sub></span>
+						<span id="shardsLabel" class="input-group-text input-group-digits input-group-title" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="<b>Shard</b><br/>Increases ▲ index and cost, reduces amount per purchase by 0.04 (minimum 0.01)">▫<sup>▫</sup><sub>□</sub></span>
 						
 					</div>
 					<input id="shards" type="text" class="form-control form-input" style="text-align: center;" disabled="true" />
@@ -98,7 +98,7 @@
 			<form id="cutContainer" class="form-inline" style="display:none;">
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<span id="cutSquaresLabel" class="input-group-text input-group-digits" style="font-size:16px" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Increases base ▲ index directly">△</span>
+						<span id="cutSquaresLabel" class="input-group-text input-group-digits" style="font-size:17px;" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="<b>Lozenge</b><br/>Increases base ▲ index directly">◊</span>
 					</div>
 					<input id="cutSquares" type="text" class="form-control form-input" style="text-align: center;" disabled="true" />
 					<div class="input-group-append">
@@ -112,7 +112,7 @@
 			<form id="triangles2container" class="form-inline" style="display:none;">
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<span id="triangles2Label" class="input-group-text input-group-digits input-group-title" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Multiplies regular ▲ value and cost. Unaffected by bonuses applied to ▲"><sub>2</sub>▲</span>
+						<span id="triangles2Label" class="input-group-text input-group-digits input-group-title" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="<b>Star</b><br/>Multiplies ▲ value and cost">☆</span>
 					</div>
 					<input id="triangles2" type="text" class="form-control form-input" style="text-align: center;" disabled="true">
 					<div class="input-group-append">
@@ -180,12 +180,12 @@
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg5" type="button" data-content="2.2" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(5)">
-						<span>Flipped stat shifts ▲ cost<br/><i>floor( log(flipped) )</i><br>Cost: 1000 ▼</span>
+						<span>Flipped stat shifts ▲ cost<br/>[ <i>floor( log<sub>10</sub>(flipped) )</i> ]<br>Cost: 1000 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg6" type="button" data-content="2.3" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(6)">
-						<span>Purchased ▫<sup>▫</sup><sub>□</sub> increase<br> ▲ base value by +0.4<br>Cost: 2000 ▼</span>
+						<span>Purchased ▫<sup>▫</sup><sub>□</sub> increase<br> ▲ base value by +0.4<br>Cost: 1500 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
@@ -207,12 +207,12 @@
 					</div>
 					<div class="col col-3">
 						<button id="HfUpg2" type="button" data-content="3.2" class="btn btn-outline-primary btn-upgrade" onclick="hfBuy(2)">
-							<span>▼ boosts flipped stat gain<br><i>floor( log10(▼) )<sup>3</sup></i></span>
+							<span>▼ boosts flipped stat gain<br>[ <i>floor( log<sub>10</sub>(▼) )<sup>3</sup></i> ]</span>
 						</button>
 					</div>
 					<div class="col col-3">
 						<button id="HfUpg3" type="button" data-content="3.3" class="btn btn-outline-primary btn-upgrade" onclick="hfBuy(3)">
-							<span>▼ boosts income<br><i>floor( log10(▼) )</i></span>
+							<span>▼ boosts income<br>[ <i>floor( log<sub>10</sub>(▼) )</i> ]</span>
 						</button>
 					</div>
 				</div>
@@ -226,7 +226,7 @@
 			<div id="flipUpgRow4" class="row justify-content-md-center upgrade-row" style="display:none;">
 				<div class="col col-3">
 					<button id="flippedUpg8" type="button" data-content="4.1" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(8)">
-						<span>Tickspeed x1.8<br><br>Cost: 1e9 ▼</span>
+						<span>Tick speed x1.8<br><br>Cost: 1e9 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
@@ -236,19 +236,19 @@
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg10" type="button" data-content="4.3" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(10)">
-						<span>Finished achievements add <br>+0.01 ▲ base value<br>Cost: 1e12 ▼</span>
+						<span>Earned achievements add <br>+0.01 ▲ base value<br>Cost: 1e12 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg11" type="button" data-content="4.4" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(11)">
-						<span>▫<sup>▫</sup><sub>□</sub> cost scales better after 0.5<br><br>Cost: 2e14 ▼</span>
+						<span>▫<sup>▫</sup><sub>□</sub> cost scales better after 0.5<br><br>Cost: 5e13 ▼</span>
 					</button>
 				</div>
 			</div>
 			<div id="flipUpgRow5" class="row justify-content-md-center upgrade-row" style="display:none;">
 			<div class="col col-3">
 					<button id="flippedUpg12" type="button" data-content="5.1" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(12)">
-						<span>Tickspeed x2<br><br>Cost: 1e40 ▼</span>
+						<span>▼ boosts ▢ gain on combine<br>[ <i>log<sub>10</sub>(▼)/2</i> ]<br>Cost: 1e35 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
@@ -258,7 +258,7 @@
 				</div>
 				<div class="col col-3">
 					<button id="flippedUpg14" type="button" data-content="5.3" class="btn btn-outline-primary btn-upgrade" onclick="flippedBuy(14)">
-						<span>▼ gain multiplier boosts<br>income at a reduced rate<br>Cost: 1e100 ▼</span>
+						<span>▼ gain multi boosts income<br>[ <i>multi<sup>0.25</sup></i> ]<br>Cost: 1e100 ▼</span>
 					</button>
 				</div>
 				<div class="col col-3">
@@ -319,17 +319,17 @@
 				</div>
 				<div class="col col-3">
 					<button id="pyramidUpg2" type="button" class="btn btn-outline-secondary" disabled>
-						<span>Row 2<br><br>Triple ▫<sup>▫</sup><sub>□</sub> gain per purchase</span>
+						<span>Row 2<br>Triple ▫<sup>▫</sup><sub>□</sub> gain per purchase<br>&nbsp;</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="pyramidUpg3" type="button" class="btn btn-outline-secondary" disabled>
-						<span>Row 3<br>Completed pyramid rows<br>shift square cutting cost</span>
+						<span>Row 3<br>Completed pyramid rows<br>shift ◊ cost</span>
 					</button>
 				</div>
 				<div class="col col-3">
 					<button id="pyramidUpg4" type="button" class="btn btn-outline-secondary" disabled>
-						<span>Row 4<br>First row of flip<br>upgrades affects <sub>2</sub>▲</span>
+						<span>Row 4<br>First row of flip<br>upgrades affects ☆</span>
 					</button>
 				</div>
 			</div>
@@ -366,7 +366,7 @@
 			<h3 class="page-header">Some achivements have unique bonuses, tap/mouse over to find out</h3>
 			<div class="row justify-content-md-left">
 				<div class="col col-2">
-					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for the first time<br/><b>Reward:</b><br/>Start with ▲ purchased 10 times">
+					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Flip for the first time<br/><b>Reward:</b><br/>▲ income x2">
 						<div id="ach0" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">Meaningful start</div>
 					</div>
 				</div>
@@ -376,7 +376,7 @@
 					</div>
 				</div>
 				<div class="col col-2">
-					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1e10 resource<br/><b>Reward:</b><br/>Get x10 flipped stat">
+					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1e10 resource<br/><b>Reward:</b><br/>Get x10 flipped stat on flip">
 						<div id="ach2" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">▲(10)</div>
 					</div>
 				</div>
@@ -398,7 +398,7 @@
 			</div>
 			<div id="postHfAch" class="row justify-content-md-left">
 				<div class="col col-2">
-					<div class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1.78e308 resource after half-flip">
+					<div class="achievement" data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1.78e308 resource after half-flip<br><b>Reward:</b><br>Start with ▲ purchased 10 times">
 						<div id="ach6" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">Through the roof</div>
 					</div>
 				</div>
@@ -440,13 +440,13 @@
 					</div>
 				</div>
 				<div class="col col-2">
-					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Have 10 ▢<br/><b>Reward:</b><br/>Get 2 more ▢ on combine">
+					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Have 10 ▢<br/><b>Reward:</b><br/>Tick speed x2">
 						<div id="ach14" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">▢=10</div>
 					</div>
 				</div>
 				<div class="col col-2">
-					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 1 full pyramide block">
-						<div id="ach15" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">That's a triangle too</div>
+					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 2 full pyramide rows">
+						<div id="ach15" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">Triforce</div>
 					</div>
 				</div>
 				<div class="col col-2">
@@ -455,8 +455,8 @@
 					</div>
 				</div>
 				<div class="col col-2">
-					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 2 full pyramide rows">
-						<div id="ach17" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">Triforce</div>
+					<div data-trigger="hover" data-toggle="popover" data-placement="bottom" data-html="true" data-content="Reach 3 full pyramide rows">
+						<div id="ach17" type="button" class="btn btn-outline-primary achievement" style="pointer-events: none;">That's a triangle too</div>
 					</div>
 				</div>
 			</div>
